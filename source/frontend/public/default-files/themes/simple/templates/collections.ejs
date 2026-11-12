@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="en"><head><%- include('./_blocks/head', { siteTitle: 'Collections'+ ' | ' + themeConfig.siteName }) %></head>
+<body><div id="app" class="main"><%- include('./_blocks/sidebar') %><div class="main-container"><div class="content-container" data-aos="fade-up"><h2 class="archives-title">Collections</h2>
+<% if (!collections.length) { %><p>No collections yet.</p><% } %>
+<% collections.forEach(function(item) { %><section class="collection-preview"><header class="collection-preview-header"><h2 class="collection-preview-title"><a href="<%= item.link %>"><%= item.name %></a></h2><span class="collection-preview-count"><%= item.count %> posts</span></header>
+<% item.posts.slice(0,3).forEach(function(article) { %><a class="collection-preview-post" href="<%= article.link %>"><span class="collection-preview-post-title"><%= article.title %></span><span class="collection-preview-post-date"><%= article.dateFormat %></span></a><% }); %>
+<% if(item.count > 3) { %><div class="collection-preview-more"><a href="<%= item.link %>">View collection →</a></div><% } %></section><% }); %></div></div></div><%- include('./_blocks/scripts') %></body></html>

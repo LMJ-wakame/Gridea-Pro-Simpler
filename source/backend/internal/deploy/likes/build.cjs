@@ -1,0 +1,1 @@
+require('esbuild').buildSync({entryPoints:[require('path').join(__dirname,'handler.cjs')],bundle:true,platform:'node',target:'node18',format:'cjs',external:['./config.json'],outfile:require('path').join(__dirname,'gridea-likes.js')});

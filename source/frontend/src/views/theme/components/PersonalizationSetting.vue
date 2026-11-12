@@ -1,0 +1,331 @@
+<template>
+  <div class="pb-20 max-w-4xl mx-auto pt-4">
+
+    <div class="space-y-6">
+
+      <!-- Articles Per Page -->
+      <div class="grid grid-cols-[180px_1fr] items-center gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground">{{ $t('settings.basic.articlesPerPage')
+          }}</label>
+        <div class="max-w-sm flex items-center gap-4">
+          <Slider v-model="postPageSizeArray" :min="0" :max="50" :step="5" class="flex-1" />
+          <span class="text-sm w-8 text-right">{{ form.postPageSize }}</span>
+        </div>
+      </div>
+
+      <!-- Archives Per Page -->
+      <div class="grid grid-cols-[180px_1fr] items-center gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground">{{ $t('settings.basic.archivesPerPage')
+          }}</label>
+        <div class="max-w-sm flex items-center gap-4">
+          <Slider v-model="archivesPageSizeArray" :min="0" :max="100" :step="10" class="flex-1" />
+          <span class="text-sm w-8 text-right">{{ form.archivesPageSize }}</span>
+        </div>
+      </div>
+
+      <!-- URL Formats -->
+      <div class="grid grid-cols-[180px_1fr] items-start gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground pt-2">{{ $t('article.defaultUrl') }}</label>
+        <div class="w-full max-w-sm">
+          <Select
+:model-value="String(form.postUrlFormat || '')"
+            @update:model-value="(v: string) => form.postUrlFormat = v">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="item in urlFormats" :key="String(item.value)" :value="String(item.value)">
+                {{ item.text }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-[180px_1fr] items-start gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground pt-2">{{ $t('tag.defaultUrl') }}</label>
+        <div class="w-full max-w-sm">
+          <Select
+:model-value="String(form.tagUrlFormat || '')"
+            @update:model-value="(v: string) => form.tagUrlFormat = v">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="item in urlFormats" :key="String(item.value)" :value="String(item.value)">
+                {{ item.text }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <!-- Paths -->
+      <div class="grid grid-cols-[180px_1fr] items-start gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground pt-2">{{ $t('article.urlPath') }}</label>
+        <div class="w-full max-w-sm">
+          <Select v-model="postPathSelectValue">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="post" title="example.com/post/xxx">{{ $t('settings.theme.default') }}</SelectItem>
+              <!-- // TODO: Check if 'default' exists or string literal -->
+              <SelectItem value="__empty__" title="example.com/xxx">{{ $t('article.concise') }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-[180px_1fr] items-start gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground pt-2">{{ $t('tag.urlPath') }}</label>
+        <div class="w-full max-w-sm">
+          <Select v-model="tagPathSelectValue">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="tag" title="example.com/tag/xxx">{{ $t('settings.theme.default') }}</SelectItem>
+              <!-- // TODO: Check key -->
+              <SelectItem value="__empty__" title="example.com/xxx">{{ $t('article.concise') }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+
+      <div class="grid grid-cols-[180px_1fr] items-start gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground pt-2">{{ $t('settings.basic.dateFormat')
+          }}</label>
+        <div class="w-full max-w-sm">
+          <Select :model-value="String(form.dateFormat || '')" @update:model-value="(v: string) => form.dateFormat = v">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="YYYY-MM-DD">2026-02-28 (YYYY-MM-DD)</SelectItem>
+              <SelectItem value="YYYY/MM/DD">2026/02/28 (YYYY/MM/DD)</SelectItem>
+              <SelectItem value="YYYY.MM.DD">2026.02.28 (YYYY.MM.DD)</SelectItem>
+              <SelectItem value="YYYY年MM月DD日">2026年2月28日 (YYYY年MM月DD日)</SelectItem>
+              <SelectItem value="MM/DD/YYYY">02/28/2026 (MM/DD/YYYY)</SelectItem>
+              <SelectItem value="MMM DD, YYYY">Feb 28, 2026 (MMM DD, YYYY)</SelectItem>
+              <SelectItem value="DD MMM YYYY">28 Feb 2026 (DD MMM YYYY)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-[180px_1fr] items-center gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground">{{ $t('settings.basic.feedEnabled') }}</label>
+        <div class="flex items-center gap-3">
+          <Switch :checked="!!form.feedEnabled" @update:checked="(v: boolean) => form.feedEnabled = v" size="sm" />
+          <span class="text-xs text-muted-foreground">{{ $t('settings.basic.feedEnabledDesc') }}</span>
+        </div>
+      </div>
+
+      <div v-if="form.feedEnabled" class="grid grid-cols-[180px_1fr] items-start gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground pt-2">{{ $t('article.feedFormat') }}</label>
+        <div class="w-full max-w-sm">
+          <Select :model-value="String(feedFullTextStr || '')" @update:model-value="(v: string) => feedFullTextStr = v">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="true">{{ $t('article.showFullText') }}</SelectItem>
+              <SelectItem value="false">{{ $t('article.showAbstract') }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div v-if="form.feedEnabled" class="grid grid-cols-[180px_1fr] items-center gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground">{{ $t('settings.basic.rssArticles')
+          }}</label>
+        <div class="max-w-sm flex items-center gap-4">
+          <Slider v-model="feedCountArray" :min="0" :max="50" :step="5" class="flex-1" />
+          <span class="text-sm w-8 text-right">{{ form.feedCount }}</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-[180px_1fr] items-center gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground">{{ $t('settings.basic.katexEnabled') }}</label>
+        <div class="flex items-center gap-3">
+          <Switch :checked="!!form.katexEnabled" @update:checked="(v: boolean) => form.katexEnabled = v" size="sm" />
+          <span class="text-xs text-muted-foreground">{{ $t('settings.basic.katexEnabledDesc') }}</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-[180px_1fr] items-center gap-4">
+        <label class="text-sm font-medium text-right text-muted-foreground">{{ $t('settings.basic.webpConvert') }}</label>
+        <div class="flex items-center gap-3">
+          <Switch :checked="!!form.webpConvertEnabled" @update:checked="(v: boolean) => form.webpConvertEnabled = v" size="sm" />
+          <span class="text-xs text-muted-foreground">{{ $t('settings.basic.webpConvertDesc') }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <footer-box>
+      <div class="flex justify-end w-full">
+        <Button
+variant="default"
+          class="w-18 h-8 text-xs justify-center rounded-full bg-primary text-background hover:bg-primary/90 cursor-pointer"
+          @click="saveTheme">
+          {{ $t('common.save') }}
+        </Button>
+      </div>
+    </footer-box>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { reactive, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useSiteStore } from '@/stores/site'
+import { toast } from 'vue-sonner'
+import FooterBox from '@/components/FooterBox/index.vue'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import {
+  UrlFormats,
+  DEFAULT_POST_PAGE_SIZE,
+  DEFAULT_ARCHIVES_PAGE_SIZE,
+  DEFAULT_FEED_COUNT,
+  DEFAULT_POST_PATH,
+  DEFAULT_TAG_PATH,
+} from '@/helpers/constants'
+import ga from '@/helpers/analytics'
+import { domain } from '@/wailsjs/go/models'
+import { EventsEmit, EventsOnce, BrowserOpenURL } from '@/wailsjs/runtime'
+import { SaveThemeConfigFromFrontend } from '@/wailsjs/go/facade/ThemeFacade'
+import { GetImageOptimizeSetting, SaveImageOptimizeSettingFromFrontend } from '@/wailsjs/go/facade/ImageOptimizeSettingFacade'
+
+const { t } = useI18n()
+const router = useRouter()
+const siteStore = useSiteStore()
+
+const form = reactive({
+  themeName: '',
+  postPageSize: DEFAULT_POST_PAGE_SIZE,
+  archivesPageSize: DEFAULT_ARCHIVES_PAGE_SIZE,
+  postUrlFormat: 'SLUG',
+  tagUrlFormat: 'SLUG',
+  dateFormat: 'YYYY-MM-DD',
+  feedEnabled: true,
+  feedFullText: true,
+  feedCount: DEFAULT_FEED_COUNT,
+  postPath: DEFAULT_POST_PATH,
+  tagPath: DEFAULT_TAG_PATH,
+  katexEnabled: true,
+  webpConvertEnabled: false,
+})
+
+const postPageSizeArray = computed({
+  get: () => [form.postPageSize],
+  set: (val: number[]) => {
+    form.postPageSize = val[0]
+  }
+})
+
+const archivesPageSizeArray = computed({
+  get: () => [form.archivesPageSize],
+  set: (val: number[]) => {
+    form.archivesPageSize = val[0]
+  }
+})
+
+const feedCountArray = computed({
+  get: () => [form.feedCount],
+  set: (val: number[]) => {
+    form.feedCount = val[0]
+  }
+})
+
+const feedFullTextStr = computed({
+  get: () => String(form.feedFullText),
+  set: (val: string) => {
+    form.feedFullText = val === 'true'
+  }
+})
+
+const postPathSelectValue = computed({
+  get: () => (form.postPath === '' ? '__empty__' : String(form.postPath || '')),
+  set: (val: string) => {
+    form.postPath = val === '__empty__' ? '' : val
+  },
+})
+
+const tagPathSelectValue = computed({
+  get: () => (form.tagPath === '' ? '__empty__' : String(form.tagPath || '')),
+  set: (val: string) => {
+    form.tagPath = val === '__empty__' ? '' : val
+  },
+})
+
+const urlFormats = UrlFormats
+
+const saveTheme = async () => {
+  console.log('开始保存主题:', form.themeName)
+
+  // Instantiate the class to ensure strict type safety
+  const themeConfig = new domain.ThemeConfig({
+    ...siteStore.site.themeConfig,
+    ...form,
+  })
+
+  try {
+    await SaveThemeConfigFromFrontend(themeConfig)
+
+    // 保存 WebP 转换设置
+    await SaveImageOptimizeSettingFromFrontend(
+      new domain.ImageOptimizeSetting({
+        enabled: form.webpConvertEnabled,
+        quality: 80,
+      })
+    )
+
+    toast.success(t('settings.theme.configSaved'))
+    ga('Theme', 'Theme - save', form.themeName)
+
+    // 重新加载站点数据
+    EventsEmit('app-site-reload')
+  } catch (e) {
+    console.error('保存主题失败:', e)
+    toast.error(t('settings.theme.saveFailed'))
+  }
+}
+
+onMounted(async () => {
+  const config = siteStore.site.themeConfig
+
+  form.themeName = config.themeName
+  form.postPageSize = config.postPageSize || DEFAULT_POST_PAGE_SIZE
+  form.archivesPageSize = config.archivesPageSize || DEFAULT_ARCHIVES_PAGE_SIZE
+  form.postUrlFormat = config.postUrlFormat
+  form.tagUrlFormat = config.tagUrlFormat
+  form.dateFormat = config.dateFormat
+  form.feedEnabled = typeof config.feedEnabled === 'boolean' ? config.feedEnabled : true
+  form.feedFullText = config.feedFullText
+  form.feedCount = config.feedCount || DEFAULT_FEED_COUNT
+  form.postPath = config.postPath || DEFAULT_POST_PATH
+  form.tagPath = config.tagPath || DEFAULT_TAG_PATH
+  form.katexEnabled = typeof config.katexEnabled === 'boolean' ? config.katexEnabled : true
+
+  // 加载 WebP 转换设置
+  try {
+    const imageOptSetting = await GetImageOptimizeSetting()
+    form.webpConvertEnabled = imageOptSetting.enabled
+  } catch {
+    // 设置不存在时使用默认值
+  }
+})
+
+const openPage = (url: string) => {
+  BrowserOpenURL(url)
+}
+</script>

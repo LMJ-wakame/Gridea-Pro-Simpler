@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@netlify/blobs": "^10.7.12",
+    "esbuild": "^0.28.2"
+  }
+}

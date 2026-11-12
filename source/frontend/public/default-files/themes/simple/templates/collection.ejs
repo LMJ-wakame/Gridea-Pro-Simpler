@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('./_blocks/head', {
+      siteTitle: `${collection.name} | ${themeConfig.siteName}`
+    }) %>
+
+    <meta
+      name="description"
+      content="<%= collection.description || themeConfig.siteDescription %>"
+    >
+  </head>
+
+  <body>
+    <div id="app" class="main">
+
+      <%- include('./_blocks/sidebar') %>
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+
+          <header class="collection-page-header">
+
+            <div class="collection-page-label">
+              Collection
+            </div>
+
+            <h1 class="collection-page-title">
+              <%= collection.name %>
+            </h1>
+
+            <% if (collection.description) { %>
+              <div class="collection-page-description">
+                <%= collection.description %>
+              </div>
+            <% } %>
+
+          </header>
+
+          <div class="collection-page-posts">
+
+            <% posts.forEach((post) => { %>
+
+              <a
+                class="collection-page-post"
+                href="<%= post.link %>"
+              >
+                <span class="collection-page-post-title">
+                  <%= post.title %>
+                </span>
+
+                <span class="collection-page-post-date">
+                  <%= post.dateFormat %>
+                </span>
+              </a>
+
+            <% }); %>
+
+          </div>
+
+          <%- include('./_blocks/pagination') %>
+
+        </div>
+      </div>
+
+    </div>
+
+    <%- include('./_blocks/scripts') %>
+  </body>
+</html>

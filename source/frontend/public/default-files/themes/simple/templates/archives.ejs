@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('./_blocks/head', { siteTitle: `Archives | ${themeConfig.siteName}` }) %>
+    <meta name="description" content="<%= themeConfig.siteDescription %>">
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <%- include('./_blocks/sidebar') %>
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <% let years = []; posts.forEach((item) => { const year = item.date.substring(0, 4); if (!years.includes(year)) { years.push(year); } }); %>
+
+          <h2 class="archives-title">Archives</h2>
+            <%
+            let archiveTags = [];
+
+            if (typeof tags !== 'undefined') {
+              archiveTags = tags;
+            } else {
+              const tagMap = new Map();
+
+              posts.forEach(function(post) {
+                (post.tags || []).forEach(function(tag) {
+                  if (tag && tag.name) {
+                    tagMap.set(tag.name, tag);
+                  }
+                });
+              });
+
+              archiveTags = Array.from(tagMap.values());
+            }
+            %>
+
+            <% if (archiveTags.length > 0) { %>
+              <section class="archive-tags-section">
+                <h2 class="tag-list-title">Tags</h2>
+                <div class="tags-container archive-tags-container">
+                  <% archiveTags.forEach((tag) => { %>
+                    <a class="tag archive-tag" href="<%= tag.link %>">
+                      <%= tag.name %>
+                    </a>
+                  <% }); %>
+                </div>
+              </section>
+            <% } %>
+          <div class="archives-container">
+            <% years.forEach(function(year) { %>
+              <h2 class="year" data-aos="fade-in" data-aos-delay="500"><%- year %></h2>
+              <% posts.forEach(function(post) { %>
+                <%if (post.date.indexOf(year) !== -1) { %>
+                  <article class="post">
+                    <a href="<%= post.link %>">
+                      <h2 class="post-title">
+                        <%= post.title %>
+                      </h2>
+                    </a>
+                  </article>
+                <% } %>
+              <% }); %>
+            <% }); %>
+          </div>
+
+          <%- include('./_blocks/pagination') %>
+        </div>
+      </div>
+    </div>
+
+    <%- include('./_blocks/scripts') %>
+  </body>
+</html>

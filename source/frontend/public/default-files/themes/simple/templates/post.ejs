@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('./_blocks/head', { siteTitle: `${post.title} | ${themeConfig.siteName}` }) %>
+    <meta name="description" content="<%- post.description %>" />
+    <meta name="keywords" content="<%- post.tags.map(tag => tag.name).join(',') %>" />
+    <% (post.versions || []).forEach(function(version) { %>
+      <link rel="alternate" hreflang="<%= version.language || 'x-default' %>" href="<%= version.link %>">
+    <% }); %>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <%- include('./_blocks/sidebar') %>
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title"><%= post.title %></h2>
+            <div class="post-date">
+              <%= post.dateFormat %>
+              <% if (site.customConfig.wordCountEnabled !== false) { %>· <%= post.stats.words %> words <% } %>
+            </div>
+            <% if (post.versions && post.versions.length > 1) { %>
+              <nav class="post-versions" aria-label="Article language">
+                <% post.versions.forEach(function(version) { %>
+                  <a href="<%= version.link %>" lang="<%= version.language || '' %>" <%- (post.language || '') === version.language ? 'aria-current="page"' : '' %>><%= version.label %></a>
+                <% }); %>
+              </nav>
+            <% } %>
+            <% if (post.feature) { %>
+              <div class="feature-container">
+                <img src="<%= post.feature %>">
+              </div>
+            <% } %>
+            <div class="post-content" <% if (post.language) { %>lang="<%= post.language %>"<% } %> v-pre>
+              <%- post.content.replace(/<img\b[^>]*>/gi, function(image) {
+                if (!/\bloading\s*=/i.test(image)) image = image.replace(/<img\b/i, '<img loading="lazy"');
+                if (!/\bdecoding\s*=/i.test(image)) image = image.replace(/<img\b/i, '<img decoding="async"');
+                return image;
+              }) %>
+            </div>
+
+            <% if (post.tags.length > 0) { %>
+              <div class="tag-container">
+                <% post.tags.forEach(function(tag, index) { %>
+                  <a href="<%= tag.link %>" class="tag">
+                    <%= tag.name %>
+                  </a>
+                <% }); %>
+              </div>
+            <% } %>
+            <% if (site.customConfig.relatedPostsEnabled !== false && post.relatedPosts && post.relatedPosts.length) { %>
+              <section class="next-post related-posts"><div class="next">Related posts</div>
+                <% post.relatedPosts.forEach(function(item) { %><a href="<%= item.link %>"><h3 class="post-title"><%= item.title %></h3></a><% }); %>
+              </section>
+            <% } %>
+            <% if (commentSetting.showComment && site.customConfig.zoommentId) { %>
+              <div
+                id="zoomment"
+                data-theme="light"
+                data-language="en"
+                data-gravatar="monsterid"
+                data-emotions="❤️,💡,🤣,💩,😢,🍭,😡,😈,🤔"
+                data-visitors="true"
+              ></div>
+            <% } %>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <%- include('./_blocks/scripts') %>
+
+  </body>
+</html>
+

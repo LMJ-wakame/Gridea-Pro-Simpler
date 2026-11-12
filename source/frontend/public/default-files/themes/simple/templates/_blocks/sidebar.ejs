@@ -1,0 +1,54 @@
+<div class="sidebar" id="site-sidebar">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="/">
+        <img src="/images/avatar.png" class="site-logo" decoding="async">
+        <h1 class="site-title"><%= themeConfig.siteName %></h1>
+      </a>
+      <div class="menu-btn">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      <% menus.forEach(function(menu) { %>
+        <% if (menu.openType === 'External') { %>
+          <a href="<%= menu.link %>" class="site-nav" target="_blank">
+            <%= menu.name %>
+          </a>
+        <% } else { %>
+          <a href="<%= menu.link %>" class="site-nav">
+            <%= menu.name %>
+          </a>
+        <% } %>
+      <% }); %>
+    </div>
+    <% if (site.customConfig.searchEnabled !== false) { %><div class="site-search"><label for="site-search"></label><input id="site-search" type="search" placeholder="Search posts..." autocomplete="off"><p id="search-status" role="status"></p><ul id="search-results"></ul></div><% } %>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      <% ['github', 'twitter', 'weibo', 'zhihu', 'facebook'].forEach((item) => { %>
+        <% if (site.customConfig[item]) { %>
+          <a class="social-link" href="<%= site.customConfig[item] %>" target="_blank">
+            <i class="fab fa-<%= item %>"></i>
+          </a>
+        <% } %>
+      <% }) %>
+    </div>
+    <% const musicInput = String(site.customConfig.musicPlayer || '').trim(); const musicSource = (musicInput.match(/\bsrc\s*=\s*["']([^"']+)["']/i) || [])[1] || ''; const musicQuery = musicSource.match(/[?&]id=(\d+)/i); const musicPlaylistId = /^\d+$/.test(musicInput) ? musicInput : (musicQuery ? musicQuery[1] : ''); %>
+    <% if (musicPlaylistId) { %>
+      <div class="sidebar-music is-collapsed" aria-label="Music player">
+        <button class="music-toggle" type="button" aria-expanded="false" aria-controls="sidebar-music-frame" onclick="const collapsed=this.closest('.sidebar-music').classList.toggle('is-collapsed');this.setAttribute('aria-expanded',String(!collapsed))"><span>Music</span><span class="music-toggle-icon" aria-hidden="true">⌄</span></button>
+        <div class="music-frame" id="sidebar-music-frame">
+          <meting-js server="netease" type="playlist" id="<%= musicPlaylistId %>" api="https://api.injahow.cn/meting/?server=:server&amp;type=:type&amp;id=:id&amp;auth=:auth&amp;r=:r" fixed="false" autoplay="false" theme="#49b1f5" loop="all" order="random" preload="none" volume="0.6" list-folded="false" list-max-height="300px" lrc-type="3"></meting-js>
+        </div>
+      </div>
+    <% } %>
+    <div class="site-description">
+      <%- themeConfig.siteDescription %>
+    </div>
+    <div class="site-footer">
+      <%- themeConfig.footerInfo %> | <a class="rss" href="/feed.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+<button class="desktop-sidebar-toggle" type="button" aria-controls="site-sidebar" aria-expanded="true" aria-label="Collapse sidebar" title="Collapse sidebar"><span aria-hidden="true">‹</span></button>

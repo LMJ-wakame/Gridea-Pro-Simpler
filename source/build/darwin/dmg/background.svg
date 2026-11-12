@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Gridea Pro — macOS DMG installer background (vector source)
+
+  Layout (600x400, matches create-dmg window-size):
+    y =  92   wordmark "Gridea Pro"        (34pt, semibold, tight tracking)
+    y = 124   tagline  "A modern static blog client"
+    y = 240   icons row (configured in release.yml: app + Applications)
+    y = 240   dotted drag-direction line between the two icons
+
+  The icons themselves are placed by create-dmg, not in this SVG:
+    icon       "Gridea Pro.app" 150 240
+    app-drop-link               450 240
+  Icon size 110 → app spans ~95..205, Applications spans ~395..505,
+  middle band 220..380 is reserved for the dotted arrow.
+
+  Open this file in a browser for a pixel-perfect preview.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#F4F6FF"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <marker id="arrow-head" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#818CF8"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="400" fill="url(#bg)"/>
+
+  <text x="300" y="92"
+        font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif"
+        font-size="34" font-weight="600" letter-spacing="-0.8"
+        fill="#0F172A" text-anchor="middle">Gridea Pro</text>
+
+  <text x="300" y="120"
+        font-family="-apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" font-weight="400" letter-spacing="0.3"
+        fill="#94A3B8" text-anchor="middle">A modern, AI-powered static blog client.</text>
+
+  <line x1="222" y1="240" x2="376" y2="240"
+        stroke="#818CF8" stroke-width="2.5" stroke-linecap="round"
+        stroke-dasharray="0.1 8" marker-end="url(#arrow-head)"/>
+</svg>
