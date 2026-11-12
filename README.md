@@ -2,11 +2,11 @@
 
 Demo: <https://alkalitile.netlify.app>
 
-为扩展版 Simple 主题定制的 Gridea Pro 升级版。
-基于 Gridea Pro 的 Windows 桌面写作工具，内置扩展版 Simple 主题。保留 Gridea Pro 和 Simple 的许可及作者信息；项目使用 GPL-3.0，源码见 `source/`。这是社区定制版本，并非官方发行版。
+为扩展版 Simple 主题定制的 Gridea Pro 升级版。基于 Gridea Pro 的 Windows 桌面写作工具，内置扩展版 Simple 主题。保留 Gridea Pro 和 Simple 的许可及作者信息；项目使用 GPL-3.0，源码见 `source/`。这是社区定制版本，并非官方发行版。
+
 早期的修改由本人完成，可能会遗留bug。后期修改主要由 GPT-6 Astra 与 GPT-6.1 Terra 完成。
-由于修改的 Gridea Pro 版本为历史版本，尽量不要选择更新，因为本人也不知道更新后的情况。
-感谢您的使用，如有问题欢迎提出。
+
+由于修改的 Gridea Pro 版本为历史版本，尽量不要选择更新，因为本人也不知道更新后的情况。感谢您的使用，如有问题欢迎提出。
 
 ## 开始使用
 
