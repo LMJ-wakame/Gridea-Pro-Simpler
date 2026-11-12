@@ -1,5 +1,0 @@
-<!DOCTYPE html>
-<html lang="en"><head><%- include('./_blocks/head', { siteTitle: 'Friends'+ ' | ' + themeConfig.siteName }) %></head>
-<body><div id="app" class="main"><%- include('./_blocks/sidebar') %><div class="main-container"><div class="content-container" data-aos="fade-up"><h2 class="archives-title">Friends</h2><% const friends = site.customConfig.links || []; %>
-<% if (!friends.length) { %><p>No friend links yet.</p><% } %>
-<% friends.forEach(function(friend) { %><article class="friend-link"><% if (/^https?:\/\//i.test(friend.siteLink)) { %><a href="<%= friend.siteLink %>" target="_blank" rel="noopener noreferrer"><h3><%= friend.siteName %></h3></a><% } else { %><h3><%= friend.siteName %></h3><% } %><p><%= friend.description %></p></article><% }); %></div></div></div><%- include('./_blocks/scripts') %></body></html>
